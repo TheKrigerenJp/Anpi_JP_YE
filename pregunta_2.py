@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 # Método de Thomas para resolver sistemas tridiagonales
-def thomas_algorithm(a, b, c, d):
+def metodoDeThomas(a, b, c, d):
     n = len(d)
     # Copias para no modificar los arreglos originales
     a, b, c, d = map(np.array, (a, b, c, d))
@@ -30,17 +30,18 @@ def edo2(p, q, r, h, a, b, y0, yn):
 
     for i in range(1, n):
         xi = x[i]
-        A[i - 1] = 1 / h ** 2 - p(xi) / (2 * h)
-        B[i - 1] = -2 / h ** 2 + q(xi)
-        C[i - 1] = 1 / h ** 2 + p(xi) / (2 * h)
-        D[i - 1] = r(xi)
+        A[i - 1] = (-h/2)*p(xi)-1
+        B[i - 1] = 2+(h**2)*q(xi)
+        C[i - 1] = (h/2)*p(xi)-1
+        D[i - 1] = (-h**2)*r(xi)
 
     # Ajustar extremos por condiciones de frontera
-    D[0] -= A[0] * y0
-    D[-1] -= C[-1] * yn
+    D[0] += ((h/2)*p(x[1])+1) * y0
+    D[n-2] += ((-h/2)*p(x[n])+1) * yn
 
-    y_inner = thomas_algorithm(A[1:], B, C[:-1], D)
+    y_inner = metodoDeThomas(A[1:], B, C[:-1], D)
     y_total = np.concatenate(([y0], y_inner, [yn]))
+    print(y_total)
     return x, y_total
 
 
